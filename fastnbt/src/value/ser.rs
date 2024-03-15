@@ -118,6 +118,7 @@ impl<'a> serde::Serializer for &'a mut Serializer {
         Ok(Value::Int(value))
     }
 
+    #[inline]
     fn serialize_i64(self, value: i64) -> Result<Value> {
         Ok(Value::Long(value))
     }

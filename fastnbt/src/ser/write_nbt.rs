@@ -7,6 +7,7 @@ use crate::error::{Error, Result};
 use crate::Tag;
 
 pub(crate) trait WriteNbt: Write {
+    #[inline]
     fn write_tag(&mut self, tag: Tag) -> Result<()> {
         self.write_u8(tag as u8)?;
         Ok(())

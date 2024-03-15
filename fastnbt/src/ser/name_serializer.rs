@@ -19,12 +19,14 @@ macro_rules! bespoke_error {
 
 macro_rules! must_be_stringy {
     ($name:literal: $ser:ident($($t:ty),*) -> $res:ty) => {
+        #[inline]
         fn $ser(self, $(_: $t),*) -> Result<$res> {
             bespoke_error!($name)
         }
     };
 
     ($name:literal: $ser:ident<T>($($t:ty),*) -> $res:ty) => {
+        #[inline]
         fn $ser<T: ?Sized>(self, $(_: $t),*) -> Result<$res> {
             bespoke_error!($name)
         }
@@ -57,16 +59,19 @@ impl<W: Write> Serializer for &mut NameSerializer<W> {
     type SerializeStruct = Impossible<(), Error>;
     type SerializeStructVariant = Impossible<(), Error>;
 
+    #[inline]
     fn serialize_bytes(self, v: &[u8]) -> Result<Self::Ok> {
         self.name.write_all(v)?;
         Ok(())
     }
 
+    #[inline]
     fn serialize_char(self, c: char) -> Result<Self::Ok> {
         self.name.write_all(&cesu8::to_java_cesu8(&c.to_string()))?;
         Ok(())
     }
 
+    #[inline]
     fn serialize_str(self, v: &str) -> Result<Self::Ok> {
         self.name.write_all(&cesu8::to_java_cesu8(v))?;
         Ok(())

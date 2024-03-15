@@ -64,6 +64,7 @@ pub enum ErrorKind {
 
 impl Error {
     /// Get the kind of error.
+    #[inline]
     pub fn kind(&self) -> &ErrorKind {
         &self.kind
     }
@@ -107,6 +108,7 @@ impl Error {
 impl std::error::Error for Error {}
 
 impl std::fmt::Display for Error {
+    #[inline]
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
         write!(f, "{}", self.msg)
     }
@@ -224,21 +226,25 @@ impl<R: Read> Parser<R> {
 
     /// Parse the next value from the input.
     #[allow(clippy::should_implement_trait)]
+    #[inline]
     pub fn next(&mut self) -> Result<Value> {
         self.next_inner()
     }
 
     /// Gets a reference to the underlying value in this parser.
+    #[inline]
     pub fn get_ref(&self) -> &R {
         &self.reader
     }
 
     /// Gets a mutable reference to the underlying value in this parser.
+    #[inline]
     pub fn get_mut(&mut self) -> &mut R {
         &mut self.reader
     }
 
     /// Consumes this parser, returning the underlying value.
+    #[inline]
     pub fn into_inner(self) -> R {
         self.reader
     }

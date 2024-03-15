@@ -174,6 +174,7 @@ impl<'a, 'de: 'a> Deserialize<'de> for IntArray<'a> {
         impl<'a, 'de: 'a> Visitor<'de> for InnerVisitor<'a> {
             type Value = IntArray<'a>;
 
+            #[inline]
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                 formatter.write_str("int array")
             }
@@ -276,6 +277,7 @@ impl<'a, 'de: 'a> Deserialize<'de> for LongArray<'a> {
         impl<'a, 'de: 'a> Visitor<'de> for InnerVisitor<'a> {
             type Value = LongArray<'a>;
 
+            #[inline]
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                 formatter.write_str("long array")
             }
@@ -345,6 +347,7 @@ impl<'a> Serialize for LongArray<'a> {
 struct CowStr<'a>(Cow<'a, str>);
 
 impl<'de> serde::Deserialize<'de> for CowStr<'de> {
+    #[inline]
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
@@ -358,12 +361,14 @@ struct CowStrVisitor;
 impl<'de> serde::de::Visitor<'de> for CowStrVisitor {
     type Value = CowStr<'de>;
 
+    #[inline]
     fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         formatter.write_str("a string")
     }
 
     // Borrowed directly from the input string, which has lifetime 'de
     // The input must outlive the resulting Cow.
+    #[inline]
     fn visit_borrowed_str<E>(self, value: &'de str) -> Result<Self::Value, E>
     where
         E: serde::de::Error,
@@ -373,6 +378,7 @@ impl<'de> serde::de::Visitor<'de> for CowStrVisitor {
 
     // A string that currently only lives in a temporary buffer -- we need a copy
     // (Example: serde is reading from a BufRead)
+    #[inline]
     fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
     where
         E: serde::de::Error,
@@ -382,6 +388,7 @@ impl<'de> serde::de::Visitor<'de> for CowStrVisitor {
 
     // An optimisation of visit_str for situations where the deserializer has
     // already taken ownership. For example, the string contains escaped characters.
+    #[inline]
     fn visit_string<E>(self, value: String) -> Result<Self::Value, E>
     where
         E: serde::de::Error,

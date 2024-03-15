@@ -233,6 +233,7 @@ pub(crate) struct Reader<R: Read> {
 impl<R: Read> private::Sealed for Reader<R> {}
 
 impl<'de, R: Read> Input<'de> for Reader<R> {
+    #[inline]
     fn consume_byte(&mut self) -> Result<u8> {
         Ok(self.reader.read_u8()?)
     }
@@ -274,22 +275,27 @@ impl<'de, R: Read> Input<'de> for Reader<R> {
         Ok(Reference::Copied(scratch.as_slice()))
     }
 
+    #[inline]
     fn consume_i16(&mut self) -> Result<i16> {
         Ok(self.reader.read_i16::<BigEndian>()?)
     }
 
+    #[inline]
     fn consume_i32(&mut self) -> Result<i32> {
         Ok(self.reader.read_i32::<BigEndian>()?)
     }
 
+    #[inline]
     fn consume_i64(&mut self) -> Result<i64> {
         Ok(self.reader.read_i64::<BigEndian>()?)
     }
 
+    #[inline]
     fn consume_f32(&mut self) -> Result<f32> {
         Ok(self.reader.read_f32::<BigEndian>()?)
     }
 
+    #[inline]
     fn consume_f64(&mut self) -> Result<f64> {
         Ok(self.reader.read_f64::<BigEndian>()?)
     }

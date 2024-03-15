@@ -31,12 +31,14 @@ pub struct Serializer<W: Write> {
 
 macro_rules! no_root {
     ($v:ident($($t:ty),* $(,)?) -> $r:ty) => {
+        #[inline]
         fn $v(self, $(_: $t),*) -> Result<$r> {
             Err(Error::no_root_compound())
         }
     };
 
     ($v:ident<T>($($t:ty),* $(,)?)) => {
+        #[inline]
         fn $v<T: ?Sized>(self, $(_: $t),*) -> Result<Self::Ok> {
             Err(Error::no_root_compound())
         }
@@ -58,6 +60,7 @@ impl<'a, W: 'a + Write> serde::ser::Serializer for &'a mut Serializer<W> {
     type SerializeStruct = SerializerMap<'a, W>;
     type SerializeStructVariant = Impossible<(), Error>;
 
+    #[inline]
     fn serialize_newtype_struct<T: ?Sized>(self, _name: &'static str, value: &T) -> Result<()>
     where
         T: Serialize,
@@ -77,6 +80,7 @@ impl<'a, W: 'a + Write> serde::ser::Serializer for &'a mut Serializer<W> {
         })
     }
 
+    #[inline]
     fn serialize_struct(self, _name: &'static str, len: usize) -> Result<Self::SerializeStruct> {
         self.serialize_map(Some(len))
     }
@@ -242,6 +246,7 @@ impl<'a, W: Write> serde::ser::SerializeStruct for SerializerMap<'a, W> {
 
     type Error = Error;
 
+    #[inline]
     fn serialize_field<T: ?Sized>(&mut self, key: &'static str, value: &T) -> Result<()>
     where
         T: serde::Serialize,
@@ -249,6 +254,7 @@ impl<'a, W: Write> serde::ser::SerializeStruct for SerializerMap<'a, W> {
         ser::SerializeMap::serialize_entry(self, key, value)
     }
 
+    #[inline]
     fn end(self) -> Result<()> {
         ser::SerializeMap::end(self)
     }
@@ -264,6 +270,7 @@ impl<'a, W: 'a + Write> serde::ser::SerializeSeq for SerializerTuple<'a, W> {
     type Ok = ();
     type Error = Error;
 
+    #[inline]
     fn serialize_element<T: ?Sized>(&mut self, value: &T) -> Result<()>
     where
         T: Serialize,
@@ -271,6 +278,7 @@ impl<'a, W: 'a + Write> serde::ser::SerializeSeq for SerializerTuple<'a, W> {
         <Self as serde::ser::SerializeTuple>::serialize_element(self, value)
     }
 
+    #[inline]
     fn end(self) -> Result<()> {
         <Self as serde::ser::SerializeTuple>::end(self)
     }
@@ -294,6 +302,7 @@ impl<'a, W: 'a + Write> serde::ser::SerializeTuple for SerializerTuple<'a, W> {
         Ok(())
     }
 
+    #[inline]
     fn end(self) -> Result<()> {
         Ok(())
     }
@@ -304,10 +313,12 @@ impl<'a, W: 'a + Write> serde::ser::SerializeTupleStruct for SerializerTuple<'a,
 
     type Error = Error;
 
+    #[inline]
     fn end(self) -> Result<()> {
         Ok(())
     }
 
+    #[inline]
     fn serialize_field<T: ?Sized>(&mut self, value: &T) -> Result<()>
     where
         T: Serialize,
@@ -321,10 +332,12 @@ impl<'a, W: 'a + Write> serde::ser::SerializeTupleVariant for SerializerTuple<'a
 
     type Error = Error;
 
+    #[inline]
     fn end(self) -> Result<()> {
         Ok(())
     }
 
+    #[inline]
     fn serialize_field<T: ?Sized>(&mut self, value: &T) -> Result<()>
     where
         T: Serialize,
@@ -469,6 +482,7 @@ impl<'a, W: 'a + Write> serde::ser::Serializer for &'a mut Delayed<'a, W> {
         }
     }
 
+    #[inline]
     fn serialize_some<T: ?Sized>(self, value: &T) -> Result<()>
     where
         T: Serialize,
@@ -476,10 +490,12 @@ impl<'a, W: 'a + Write> serde::ser::Serializer for &'a mut Delayed<'a, W> {
         value.serialize(self)
     }
 
+    #[inline]
     fn serialize_unit(self) -> Result<()> {
         Err(Error::bespoke("cannot serialize unit: ()".to_string()))
     }
 
+    #[inline]
     fn serialize_unit_struct(self, name: &'static str) -> Result<()> {
         Err(Error::bespoke(format!(
             "cannot serialize unit struct: {name}"
@@ -496,6 +512,7 @@ impl<'a, W: 'a + Write> serde::ser::Serializer for &'a mut Delayed<'a, W> {
         self.ser.writer.write_size_prefixed_str(variant)
     }
 
+    #[inline]
     fn serialize_newtype_struct<T: ?Sized>(self, _name: &'static str, value: &T) -> Result<()>
     where
         T: Serialize,
@@ -503,6 +520,7 @@ impl<'a, W: 'a + Write> serde::ser::Serializer for &'a mut Delayed<'a, W> {
         value.serialize(self)
     }
 
+    #[inline]
     fn serialize_newtype_variant<T: ?Sized>(
         self,
         _name: &'static str,
@@ -548,6 +566,7 @@ impl<'a, W: 'a + Write> serde::ser::Serializer for &'a mut Delayed<'a, W> {
         })
     }
 
+    #[inline]
     fn serialize_tuple_struct(
         self,
         _name: &'static str,
@@ -556,6 +575,7 @@ impl<'a, W: 'a + Write> serde::ser::Serializer for &'a mut Delayed<'a, W> {
         self.serialize_tuple(len)
     }
 
+    #[inline]
     fn serialize_tuple_variant(
         self,
         _name: &'static str,
@@ -575,10 +595,12 @@ impl<'a, W: 'a + Write> serde::ser::Serializer for &'a mut Delayed<'a, W> {
         })
     }
 
+    #[inline]
     fn serialize_struct(self, _name: &'static str, len: usize) -> Result<Self::SerializeStruct> {
         self.serialize_map(Some(len))
     }
 
+    #[inline]
     fn serialize_struct_variant(
         self,
         _name: &'static str,
