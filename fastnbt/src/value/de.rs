@@ -21,10 +21,12 @@ impl<'de> Deserialize<'de> for Value {
         impl<'de> serde::de::Visitor<'de> for ValueVisitor {
             type Value = Value;
 
+            #[inline]
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                 formatter.write_str("valid NBT")
             }
 
+            #[inline]
             fn visit_i8<E>(self, v: i8) -> Result<Self::Value, E>
             where
                 E: serde::de::Error,
@@ -32,6 +34,7 @@ impl<'de> Deserialize<'de> for Value {
                 Ok(Value::Byte(v))
             }
 
+            #[inline]
             fn visit_i16<E>(self, v: i16) -> Result<Self::Value, E>
             where
                 E: serde::de::Error,
@@ -39,6 +42,7 @@ impl<'de> Deserialize<'de> for Value {
                 Ok(Value::Short(v))
             }
 
+            #[inline]
             fn visit_i32<E>(self, v: i32) -> Result<Self::Value, E>
             where
                 E: serde::de::Error,
@@ -46,6 +50,7 @@ impl<'de> Deserialize<'de> for Value {
                 Ok(Value::Int(v))
             }
 
+            #[inline]
             fn visit_i64<E>(self, v: i64) -> Result<Self::Value, E>
             where
                 E: serde::de::Error,
@@ -53,6 +58,7 @@ impl<'de> Deserialize<'de> for Value {
                 Ok(Value::Long(v))
             }
 
+            #[inline]
             fn visit_f32<E>(self, v: f32) -> Result<Self::Value, E>
             where
                 E: serde::de::Error,
@@ -60,6 +66,7 @@ impl<'de> Deserialize<'de> for Value {
                 Ok(Value::Float(v))
             }
 
+            #[inline]
             fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
             where
                 E: serde::de::Error,
@@ -67,6 +74,7 @@ impl<'de> Deserialize<'de> for Value {
                 Ok(Value::Double(v))
             }
 
+            #[inline]
             fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
             where
                 E: serde::de::Error,
@@ -147,6 +155,7 @@ enum KeyClass {
 impl<'de> DeserializeSeed<'de> for KeyClassifier {
     type Value = KeyClass;
 
+    #[inline]
     fn deserialize<D>(self, deserializer: D) -> Result<KeyClass, D::Error>
     where
         D: serde::Deserializer<'de>,
@@ -158,6 +167,7 @@ impl<'de> DeserializeSeed<'de> for KeyClassifier {
 impl<'de> Visitor<'de> for KeyClassifier {
     type Value = KeyClass;
 
+    #[inline]
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
         formatter.write_str("an nbt field string")
     }
@@ -464,6 +474,7 @@ impl<'de> serde::Deserializer<'de> for &'de Value {
         }
     }
 
+    #[inline]
     fn deserialize_string<V>(self, visitor: V) -> Result<V::Value, Error>
     where
         V: Visitor<'de>,
@@ -471,6 +482,7 @@ impl<'de> serde::Deserializer<'de> for &'de Value {
         self.deserialize_str(visitor)
     }
 
+    #[inline]
     fn deserialize_bytes<V>(self, visitor: V) -> Result<V::Value, Error>
     where
         V: Visitor<'de>,
@@ -499,6 +511,7 @@ impl<'de> serde::Deserializer<'de> for &'de Value {
         }
     }
 
+    #[inline]
     fn deserialize_tuple<V>(self, _len: usize, visitor: V) -> Result<V::Value, Error>
     where
         V: Visitor<'de>,
@@ -506,6 +519,7 @@ impl<'de> serde::Deserializer<'de> for &'de Value {
         self.deserialize_seq(visitor)
     }
 
+    #[inline]
     fn deserialize_tuple_struct<V>(
         self,
         _name: &'static str,
@@ -518,6 +532,7 @@ impl<'de> serde::Deserializer<'de> for &'de Value {
         self.deserialize_seq(visitor)
     }
 
+    #[inline]
     fn deserialize_map<V>(self, visitor: V) -> Result<V::Value, Error>
     where
         V: Visitor<'de>,
@@ -541,6 +556,7 @@ impl<'de> serde::Deserializer<'de> for &'de Value {
         }
     }
 
+    #[inline]
     fn deserialize_identifier<V>(self, visitor: V) -> Result<V::Value, Error>
     where
         V: Visitor<'de>,
@@ -548,6 +564,7 @@ impl<'de> serde::Deserializer<'de> for &'de Value {
         self.deserialize_string(visitor)
     }
 
+    #[inline]
     fn deserialize_ignored_any<V>(self, visitor: V) -> Result<V::Value, Error>
     where
         V: Visitor<'de>,
@@ -555,6 +572,7 @@ impl<'de> serde::Deserializer<'de> for &'de Value {
         visitor.visit_unit()
     }
 
+    #[inline]
     fn deserialize_unit<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
@@ -562,6 +580,7 @@ impl<'de> serde::Deserializer<'de> for &'de Value {
         visitor.visit_unit()
     }
 
+    #[inline]
     fn deserialize_unit_struct<V>(
         self,
         _name: &'static str,
@@ -581,6 +600,7 @@ pub struct ArrayAccess<'de> {
 impl<'de> MapAccess<'de> for ArrayAccess<'de> {
     type Error = Error;
 
+    #[inline]
     fn next_key_seed<K>(&mut self, seed: K) -> Result<Option<K::Value>, Self::Error>
     where
         K: DeserializeSeed<'de>,
@@ -626,6 +646,7 @@ impl<'de> EnumAccess<'de> for EnumDeserializer<'de> {
 impl<'de> IntoDeserializer<'de, Error> for &'de Value {
     type Deserializer = Self;
 
+    #[inline]
     fn into_deserializer(self) -> Self::Deserializer {
         self
     }
@@ -708,6 +729,7 @@ struct SeqDeserializer<'de> {
 }
 
 impl<'de> SeqDeserializer<'de> {
+    #[inline]
     fn new(slice: &'de [Value]) -> Self {
         SeqDeserializer { iter: slice.iter() }
     }
@@ -902,6 +924,7 @@ struct BorrowedCowStrDeserializer<'de> {
 }
 
 impl<'de> BorrowedCowStrDeserializer<'de> {
+    #[inline]
     fn new(value: Cow<'de, str>) -> Self {
         BorrowedCowStrDeserializer { value }
     }
@@ -920,6 +943,7 @@ impl<'de> Deserializer<'de> for BorrowedCowStrDeserializer<'de> {
         }
     }
 
+    #[inline]
     fn deserialize_enum<V>(
         self,
         _name: &str,
@@ -957,6 +981,7 @@ struct UnitOnly;
 impl<'de> VariantAccess<'de> for UnitOnly {
     type Error = Error;
 
+    #[inline(always)]
     fn unit_variant(self) -> Result<(), Error> {
         Ok(())
     }

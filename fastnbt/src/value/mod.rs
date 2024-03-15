@@ -166,6 +166,7 @@ impl Value {
 macro_rules! from {
     ($type:ty, $variant:ident $(, $($part:tt)+)?) => {
         impl From<$type> for Value {
+            #[inline]
             fn from(val: $type) -> Self {
                 Self::$variant(val$($($part)+)?)
             }
@@ -194,11 +195,13 @@ from!(IntArray, IntArray);
 from!(LongArray, LongArray);
 
 impl From<bool> for Value {
+    #[inline]
     fn from(val: bool) -> Self {
         Self::Byte(i8::from(val))
     }
 }
 impl From<&bool> for Value {
+    #[inline]
     fn from(val: &bool) -> Self {
         Self::Byte(i8::from(*val))
     }
@@ -252,36 +255,42 @@ fn eq_str(value: &Value, other: &str) -> bool {
 }
 
 impl PartialEq<str> for Value {
+    #[inline]
     fn eq(&self, other: &str) -> bool {
         eq_str(self, other)
     }
 }
 
 impl<'a> PartialEq<&'a str> for Value {
+    #[inline]
     fn eq(&self, other: &&str) -> bool {
         eq_str(self, other)
     }
 }
 
 impl PartialEq<Value> for str {
+    #[inline]
     fn eq(&self, other: &Value) -> bool {
         eq_str(other, self)
     }
 }
 
 impl<'a> PartialEq<Value> for &'a str {
+    #[inline]
     fn eq(&self, other: &Value) -> bool {
         eq_str(other, self)
     }
 }
 
 impl PartialEq<String> for Value {
+    #[inline]
     fn eq(&self, other: &String) -> bool {
         eq_str(self, other.as_str())
     }
 }
 
 impl PartialEq<Value> for String {
+    #[inline]
     fn eq(&self, other: &Value) -> bool {
         eq_str(other, self.as_str())
     }
@@ -291,24 +300,28 @@ macro_rules! partialeq_numeric {
     ($($eq:ident [$($ty:ty)*])*) => {
         $($(
             impl PartialEq<$ty> for Value {
+                #[inline]            
                 fn eq(&self, other: &$ty) -> bool {
                     $eq(self, *other as _)
                 }
             }
 
             impl PartialEq<Value> for $ty {
+                #[inline]
                 fn eq(&self, other: &Value) -> bool {
                     $eq(other, *self as _)
                 }
             }
 
             impl<'a> PartialEq<$ty> for &'a Value {
+                #[inline]
                 fn eq(&self, other: &$ty) -> bool {
                     $eq(*self, *other as _)
                 }
             }
 
             impl<'a> PartialEq<$ty> for &'a mut Value {
+                #[inline]
                 fn eq(&self, other: &$ty) -> bool {
                     $eq(*self, *other as _)
                 }
@@ -338,6 +351,7 @@ macro_rules! from_128bit {
             }
 
             impl From<&$type> for Value {
+                #[inline]
                 fn from(val: &$type) -> Self {
                     Value::from(*val)
                 }
@@ -401,6 +415,7 @@ serde_if_integer128! {
 ///
 /// println!("{}", fastnbt::to_value(map).unwrap_err());
 /// ```
+#[inline]
 pub fn to_value<T>(value: T) -> Result<Value, Error>
 where
     T: Serialize,
@@ -441,6 +456,7 @@ where
 /// is wrong with the data, for example required struct fields are missing from
 /// the NBT compound or some number is too big to fit in the expected primitive
 /// type.
+#[inline]
 pub fn from_value<'de, T>(value: &'de Value) -> Result<T, Error>
 where
     T: Deserialize<'de>,
