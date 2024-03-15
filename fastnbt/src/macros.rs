@@ -307,3 +307,22 @@ macro_rules! nbt_internal_vec {
         vec![$($content)*]
     };
 }
+
+macro_rules! array_as_other {
+    ($v:ident($($t:ty),* $(,)?) -> $r:ty) => {
+        fn $v(self, $(_: $t),*) -> Result<$r> {
+            Err(Error::array_as_other())
+        }
+    };
+
+    ($v:ident<T>($($t:ty),* $(,)?)) => {
+        fn $v<T: ?Sized>(self, $(_: $t),*) -> Result<Self::Ok> {
+            Err(Error::array_as_other())
+        }
+    };
+
+    ($v:ident($($t:ty),* $(,)?)) => {
+        array_as_other!{$v($($t,)*) -> Self::Ok}
+    };
+}
+pub(crate) use array_as_other;
