@@ -1,6 +1,8 @@
 use byteorder::{NativeEndian, ReadBytesExt};
 use serde::ser::Impossible;
 
+use crate::error::Result;
+use crate::macros::array_as_other;
 use crate::{error::Error, ByteArray, IntArray, LongArray, Tag, Value};
 
 use super::ser::Serializer;
@@ -23,59 +25,7 @@ impl<'a> serde::Serializer for ArraySerializer<'a> {
     type SerializeStruct = Impossible<Self::Ok, Self::Error>;
     type SerializeStructVariant = Impossible<Self::Ok, Self::Error>;
 
-    fn serialize_bool(self, _v: bool) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_i8(self, _v: i8) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_i16(self, _v: i16) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_i32(self, _v: i32) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_i64(self, _v: i64) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_u8(self, _v: u8) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_u16(self, _v: u16) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_u32(self, _v: u32) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_u64(self, _v: u64) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_f32(self, _v: f32) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_f64(self, _v: f64) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_char(self, _v: char) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_str(self, _v: &str) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_bytes(self, v: &[u8]) -> Result<Self::Ok, Self::Error> {
+    fn serialize_bytes(self, v: &[u8]) -> Result<Self::Ok> {
         match self.tag {
             Tag::ByteArray => Ok(Value::ByteArray(ByteArray::from_bytes(v))),
             Tag::IntArray => Ok(Value::IntArray(IntArray::new(
@@ -92,103 +42,49 @@ impl<'a> serde::Serializer for ArraySerializer<'a> {
         }
     }
 
-    fn serialize_none(self) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
+    array_as_other!(serialize_bool(bool));
+    array_as_other!(serialize_i8(i8));
+    array_as_other!(serialize_i16(i16));
+    array_as_other!(serialize_i32(i32));
+    array_as_other!(serialize_i64(i64)); 
+    array_as_other!(serialize_i128(i128));
+    array_as_other!(serialize_u8(u8));
+    array_as_other!(serialize_u16(u16));
+    array_as_other!(serialize_u32(u32));
+    array_as_other!(serialize_u64(u64));
+    array_as_other!(serialize_u128(u128));
+    array_as_other!(serialize_f32(f32));
+    array_as_other!(serialize_f64(f64));
+    array_as_other!(serialize_char(char));
+    array_as_other!(serialize_str(&str));
+    array_as_other!(serialize_none());
+    array_as_other!(serialize_some<T>(&T));
+    array_as_other!(serialize_unit());
+    array_as_other!(serialize_unit_struct(&'static str));
+    array_as_other!(serialize_unit_variant(&'static str, u32, &'static str));
+    array_as_other!(serialize_newtype_struct<T>(&'static str, &T));
+    array_as_other!(serialize_newtype_variant<T>(&'static str, u32, &'static str, &T));
+    array_as_other!(serialize_seq(Option<usize>) -> Self::SerializeSeq);
+    array_as_other!(serialize_tuple(usize) -> Self::SerializeSeq);
+    array_as_other!(serialize_map(Option<usize>) -> Self::SerializeMap);
+    array_as_other!(serialize_tuple_struct(&'static str, usize) -> Self::SerializeTupleStruct);
+    array_as_other!(serialize_struct(&'static str, usize) -> Self::SerializeStruct);
 
-    fn serialize_some<T: ?Sized>(self, _value: &T) -> Result<Self::Ok, Self::Error>
-    where
-        T: serde::Serialize,
-    {
-        unimplemented!()
-    }
+    array_as_other!(
+        serialize_tuple_variant(
+            &'static str,
+            u32,
+            &'static str,
+            usize,
+        ) -> Self::SerializeTupleVariant
+    );
 
-    fn serialize_unit(self) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_unit_struct(self, _name: &'static str) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_unit_variant(
-        self,
-        _name: &'static str,
-        _variant_index: u32,
-        _variant: &'static str,
-    ) -> Result<Self::Ok, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_newtype_struct<T: ?Sized>(
-        self,
-        _name: &'static str,
-        _value: &T,
-    ) -> Result<Self::Ok, Self::Error>
-    where
-        T: serde::Serialize,
-    {
-        unimplemented!()
-    }
-
-    fn serialize_newtype_variant<T: ?Sized>(
-        self,
-        _name: &'static str,
-        _variant_index: u32,
-        _variant: &'static str,
-        _value: &T,
-    ) -> Result<Self::Ok, Self::Error>
-    where
-        T: serde::Serialize,
-    {
-        unimplemented!()
-    }
-
-    fn serialize_seq(self, _len: Option<usize>) -> Result<Self::SerializeSeq, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_tuple(self, _len: usize) -> Result<Self::SerializeTuple, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_tuple_struct(
-        self,
-        _name: &'static str,
-        _len: usize,
-    ) -> Result<Self::SerializeTupleStruct, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_tuple_variant(
-        self,
-        _name: &'static str,
-        _variant_index: u32,
-        _variant: &'static str,
-        _len: usize,
-    ) -> Result<Self::SerializeTupleVariant, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_map(self, _len: Option<usize>) -> Result<Self::SerializeMap, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_struct(
-        self,
-        _name: &'static str,
-        _len: usize,
-    ) -> Result<Self::SerializeStruct, Self::Error> {
-        unimplemented!()
-    }
-
-    fn serialize_struct_variant(
-        self,
-        _name: &'static str,
-        _variant_index: u32,
-        _variant: &'static str,
-        _len: usize,
-    ) -> Result<Self::SerializeStructVariant, Self::Error> {
-        unimplemented!()
-    }
+    array_as_other!(
+        serialize_struct_variant(
+            &'static str,
+            u32,
+            &'static str,
+            usize,
+        ) -> Self::SerializeStructVariant
+    );
 }
