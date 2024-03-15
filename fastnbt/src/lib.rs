@@ -260,6 +260,7 @@ pub struct SerOpts {
 
 impl SerOpts {
     /// Create new options. This object follows a builder pattern.
+    #[inline]
     pub fn new() -> Self {
         Default::default()
     }
@@ -358,6 +359,7 @@ pub struct DeOpts {
 
 impl DeOpts {
     /// Create new options. This object follows a builder pattern.
+    #[inline]
     pub fn new() -> Self {
         Default::default()
     }

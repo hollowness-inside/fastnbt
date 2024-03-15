@@ -270,6 +270,7 @@ impl<'a> Deserializer<input::Slice<'a>> {
     /// for more information.
     ///
     /// [`de`]: ./index.html
+    #[inline]
     pub fn from_bytes(bytes: &'a [u8], opts: DeOpts) -> Self {
         Deserializer::new(input::Slice { data: bytes }, opts)
     }
@@ -280,6 +281,7 @@ impl<R: Read> Deserializer<input::Reader<R>> {
     /// for more information.
     ///
     /// [`de`]: ./index.html
+    #[inline]
     pub fn from_reader(reader: R, opts: DeOpts) -> Self {
         Deserializer::new(input::Reader { reader }, opts)
     }
@@ -296,6 +298,7 @@ where
         identifier ignored_any bytes enum newtype_struct byte_buf option
     }
 
+    #[inline]
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
@@ -321,6 +324,7 @@ where
         visitor.visit_map(MapAccess::new(self))
     }
 
+    #[inline]
     fn deserialize_struct<V>(
         self,
         _name: &'static str,
@@ -558,6 +562,7 @@ where
         }
     }
 
+    #[inline]
     fn deserialize_byte_buf<V>(self, visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
@@ -565,6 +570,7 @@ where
         self.deserialize_bytes(visitor)
     }
 
+    #[inline]
     fn deserialize_option<V>(self, visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
@@ -584,6 +590,7 @@ where
         visitor.visit_unit()
     }
 
+    #[inline]
     fn deserialize_unit_struct<V>(self, _name: &'static str, visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
@@ -591,6 +598,7 @@ where
         self.deserialize_unit(visitor)
     }
 
+    #[inline]
     fn deserialize_tuple_struct<V>(
         self,
         _name: &'static str,
@@ -652,6 +660,7 @@ where
         }
     }
 
+    #[inline]
     fn deserialize_newtype_struct<V>(self, _name: &'static str, visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
@@ -727,10 +736,12 @@ impl<'de, 'a, In: Input<'de> + 'a> de::EnumAccess<'de> for UnitVariantAccess<'a,
 impl<'de, 'a, In: Input<'de> + 'a> de::VariantAccess<'de> for UnitVariantAccess<'a, In> {
     type Error = Error;
 
+    #[inline(always)]
     fn unit_variant(self) -> Result<()> {
         Ok(())
     }
 
+    #[inline(always)]
     fn newtype_variant_seed<T>(self, _seed: T) -> Result<T::Value>
     where
         T: serde::de::DeserializeSeed<'de>,
@@ -740,7 +751,8 @@ impl<'de, 'a, In: Input<'de> + 'a> de::VariantAccess<'de> for UnitVariantAccess<
             &"newtype variant",
         ))
     }
-
+    
+    #[inline(always)]
     fn tuple_variant<V>(self, _len: usize, _visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,
@@ -751,6 +763,7 @@ impl<'de, 'a, In: Input<'de> + 'a> de::VariantAccess<'de> for UnitVariantAccess<
         ))
     }
 
+    #[inline(always)]
     fn struct_variant<V>(self, _fields: &'static [&'static str], _visitor: V) -> Result<V::Value>
     where
         V: de::Visitor<'de>,

@@ -43,6 +43,7 @@ impl<'de> Deserialize<'de> for ByteArray {
         impl<'de> Visitor<'de> for InnerVisitor {
             type Value = ByteArray;
 
+            #[inline]
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                 formatter.write_str("byte array")
             }
@@ -74,6 +75,7 @@ impl ByteArray {
     }
 
     /// Move the raw data out of this ByteArray.
+    #[inline]
     pub fn into_inner(self) -> Vec<i8> {
         self.data
     }
@@ -107,12 +109,14 @@ impl ByteArray {
 impl Deref for ByteArray {
     type Target = [i8];
 
+    #[inline]
     fn deref(&self) -> &Self::Target {
         &self.data
     }
 }
 
 impl DerefMut for ByteArray {
+    #[inline]
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.data
     }
@@ -134,6 +138,7 @@ impl IntArray {
     }
 
     /// Move the raw data out of this IntArray.
+    #[inline]
     pub fn into_inner(self) -> Vec<i32> {
         self.data
     }
@@ -206,12 +211,14 @@ impl<'de> Deserialize<'de> for IntArray {
 impl Deref for IntArray {
     type Target = [i32];
 
+    #[inline]
     fn deref(&self) -> &Self::Target {
         &self.data
     }
 }
 
 impl DerefMut for IntArray {
+    #[inline]
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.data
     }
@@ -233,6 +240,7 @@ impl LongArray {
     }
 
     /// Move the raw data out of this LongArray.
+    #[inline]
     pub fn into_inner(self) -> Vec<i64> {
         self.data
     }
@@ -304,12 +312,14 @@ impl<'de> Deserialize<'de> for LongArray {
 impl Deref for LongArray {
     type Target = [i64];
 
+    #[inline]
     fn deref(&self) -> &Self::Target {
         &self.data
     }
 }
 
 impl DerefMut for LongArray {
+    #[inline]
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.data
     }

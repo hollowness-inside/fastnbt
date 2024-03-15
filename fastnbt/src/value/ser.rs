@@ -118,6 +118,7 @@ impl<'a> serde::Serializer for &'a mut Serializer {
         Ok(Value::Int(value))
     }
 
+    #[inline]
     fn serialize_i64(self, value: i64) -> Result<Value> {
         Ok(Value::Long(value))
     }
@@ -508,7 +509,7 @@ impl serde::Serializer for MapKeySerializer {
     fn serialize_i16(self, value: i16) -> Result<String> {
         Ok(value.to_string())
     }
-    
+
     #[inline]
     fn serialize_i32(self, value: i32) -> Result<String> {
         Ok(value.to_string())
