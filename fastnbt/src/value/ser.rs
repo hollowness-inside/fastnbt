@@ -268,9 +268,9 @@ impl<'a> serde::Serializer for &'a mut Serializer {
         })
     }
 
-    fn serialize_map(self, _len: Option<usize>) -> Result<Self::SerializeMap> {
+    fn serialize_map(self, len: Option<usize>) -> Result<Self::SerializeMap> {
         Ok(SerializeMap {
-            map: HashMap::new(),
+            map: HashMap::with_capacity(len.unwrap_or(0)),
             next_key: None,
         })
     }
@@ -285,11 +285,11 @@ impl<'a> serde::Serializer for &'a mut Serializer {
         _name: &'static str,
         _variant_index: u32,
         variant: &'static str,
-        _len: usize,
+        len: usize,
     ) -> Result<Self::SerializeStructVariant> {
         Ok(SerializeStructVariant {
             name: variant.into(),
-            map: HashMap::new(),
+            map: HashMap::with_capacity(len),
         })
     }
 
