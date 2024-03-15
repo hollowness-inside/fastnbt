@@ -508,7 +508,7 @@ impl serde::Serializer for MapKeySerializer {
     fn serialize_i16(self, value: i16) -> Result<String> {
         Ok(value.to_string())
     }
-    
+
     #[inline]
     fn serialize_i32(self, value: i32) -> Result<String> {
         Ok(value.to_string())
