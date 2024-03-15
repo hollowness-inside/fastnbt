@@ -217,21 +217,14 @@ impl<'a> serde::Serializer for &'a mut Serializer {
     where
         T: ?Sized + Serialize,
     {
-        match variant {
-            crate::BYTE_ARRAY_TOKEN => value.serialize(ArraySerializer {
-                ser: self,
-                tag: Tag::ByteArray,
-            }),
-            crate::INT_ARRAY_TOKEN => value.serialize(ArraySerializer {
-                ser: self,
-                tag: Tag::IntArray,
-            }),
-            crate::LONG_ARRAY_TOKEN => value.serialize(ArraySerializer {
-                ser: self,
-                tag: Tag::LongArray,
-            }),
+        let tag = match variant {
+            crate::BYTE_ARRAY_TOKEN => Tag::ByteArray,
+            crate::INT_ARRAY_TOKEN => Tag::IntArray,
+            crate::LONG_ARRAY_TOKEN => Tag::LongArray,
             _ => todo!("newtype variants that are not nbt arrays"),
-        }
+        };
+
+        value.serialize(ArraySerializer { ser: self, tag })
     }
 
     #[inline]
