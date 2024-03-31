@@ -290,8 +290,7 @@ impl<R: Read> Parser<R> {
                     self.layers.pop();
                     Ok(Value::CompoundEnd)
                 }
-                Some(_) => Err(Error::bespoke("expected to be in compound")),
-                None => Err(Error::bespoke("expected to be in compound")),
+                _ => Err(Error::bespoke("expected to be in compound")),
             };
         }
 
