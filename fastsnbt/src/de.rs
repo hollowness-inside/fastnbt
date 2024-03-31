@@ -259,8 +259,7 @@ impl<'a, 'de> MapAccess<'de> for ArrayWrapperAccess<'a, 'de> {
     {
         match self.token {
             BYTE_ARRAY_TOKEN => {
-                let data = <Vec<i8> as de::Deserialize>::deserialize(SeqAccessDeserializer::new(CommaSep::new(self.de)))?;
-                let data = unsafe { &*(data.as_slice() as *const [i8] as *const [u8]) };
+                let data = <&[u8] as de::Deserialize>::deserialize(SeqAccessDeserializer::new(CommaSep::new(self.de)))?;
                 seed.deserialize(BytesDeserializer::new(data))
             }
             INT_ARRAY_TOKEN => {
