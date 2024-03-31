@@ -57,7 +57,7 @@ impl<'de> Deserialize<'de> for ByteArray {
                 let data = map.next_value::<ByteBuf>()?;
 
                 if token == BYTE_ARRAY_TOKEN {
-                    Ok(ByteArray::from_buf(data.into_vec()))
+                    Ok(ByteArray::from_bytes(&data.into_vec()))
                 } else {
                     Err(serde::de::Error::custom("expected NBT byte array token"))
                 }
@@ -80,13 +80,6 @@ impl ByteArray {
 
     /// Produce a ByteArray from raw data.
     pub(crate) fn from_bytes(data: &[u8]) -> Self {
-        ByteArray {
-            data: data.iter().map(|x| *x as i8).collect(),
-        }
-    }
-
-    /// Produce a ByteArray from raw data.
-    pub(crate) fn from_buf(data: Vec<u8>) -> Self {
         ByteArray {
             data: data.iter().map(|x| *x as i8).collect(),
         }
