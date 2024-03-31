@@ -119,7 +119,7 @@ impl<'de> Deserialize<'de> for Value {
                     }
                     Some(KeyClass::ByteArray) => {
                         let data = map.next_value::<ByteBuf>()?;
-                        Ok(Value::ByteArray(ByteArray::from_buf(data.into_vec())))
+                        Ok(Value::ByteArray(ByteArray::from_bytes(&data.into_vec())))
                     }
                     Some(KeyClass::IntArray) => {
                         let data = map.next_value::<ByteBuf>()?;

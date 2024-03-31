@@ -252,14 +252,15 @@ impl<R: Read> Parser<R> {
     /// Get the next value from the reader. Returns EOF if the stream ended sucessfully, and
     /// IO(err) for any other IO error.
     fn next_inner(&mut self) -> Result<Value> {
-        let last_layer = self.layers.last().map(|l| (*l).clone());
-        match last_layer {
-            Some(Layer::List(_, 0)) => {
-                self.layers.pop();
-                return Ok(Value::ListEnd);
+        let last_layer = self.layers.last().cloned();
+        if let Some(layer) = &last_layer {
+            match layer {
+                Layer::List(_, 0) => {
+                    self.layers.pop();
+                    return Ok(Value::ListEnd);
+                }
+                _ => {}
             }
-            Some(_) => {}
-            None => {}
         }
 
         if let Some(layer) = self.layers.last_mut() {
@@ -271,8 +272,7 @@ impl<R: Read> Parser<R> {
             };
         }
 
-        let last_layer = self.layers.last().map(|l| (*l).clone());
-        if let Some(layer) = last_layer {
+        if let Some(layer) = &last_layer {
             match layer {
                 Layer::List(tag, _) => return self.read_payload(tag, None),
                 Layer::Compound => {}
@@ -291,20 +291,18 @@ impl<R: Read> Parser<R> {
 
         if tag == Tag::End {
             // End tags have no name or value.
-            let last_layer = self.layers.last().map(|l| (*l).clone());
             return match last_layer {
                 Some(Layer::Compound) => {
                     self.layers.pop();
                     Ok(Value::CompoundEnd)
                 }
-                Some(_) => Err(Error::bespoke("expected to be in compound")),
-                None => Err(Error::bespoke("expected to be in compound")),
+                _ => Err(Error::bespoke("expected to be in compound")),
             };
         }
 
         let name = Some(self.read_size_prefixed_string()?);
 
-        self.read_payload(tag, name)
+        self.read_payload(&tag, name)
     }
 
     fn read_size_prefixed_string(&mut self) -> Result<String> {
@@ -318,7 +316,7 @@ impl<R: Read> Parser<R> {
             .into_owned())
     }
 
-    fn read_payload(&mut self, tag: Tag, name: Name) -> Result<Value> {
+    fn read_payload(&mut self, tag: &Tag, name: Name) -> Result<Value> {
         match tag {
             Tag::Byte => Ok(Value::Byte(name, self.reader.read_i8()?)),
             Tag::Short => Ok(Value::Short(name, self.reader.read_i16::<BigEndian>()?)),

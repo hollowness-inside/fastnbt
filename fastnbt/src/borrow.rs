@@ -63,7 +63,8 @@ impl<'a> ByteArray<'a> {
     }
 
     pub fn new(data: &'a [i8]) -> Self {
-        let (_, data, _) = unsafe { data.align_to::<u8>() };
+        // Safe to treat &[i8] as &[u8]
+        let data = unsafe { &*(data as *const _ as *const [u8]) };
         Self { data }
     }
 
