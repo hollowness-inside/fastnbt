@@ -268,7 +268,7 @@ impl<R: Read> Parser<R> {
 
         if let Some(layer) = &last_layer {
             match layer {
-                Layer::List(tag, _) => return self.read_payload(*tag, None),
+                Layer::List(tag, _) => return self.read_payload(tag, None),
                 Layer::Compound => {}
             };
         }
@@ -297,7 +297,7 @@ impl<R: Read> Parser<R> {
 
         let name = Some(self.read_size_prefixed_string()?);
 
-        self.read_payload(tag, name)
+        self.read_payload(&tag, name)
     }
 
     fn read_size_prefixed_string(&mut self) -> Result<String> {
@@ -311,7 +311,7 @@ impl<R: Read> Parser<R> {
             .into_owned())
     }
 
-    fn read_payload(&mut self, tag: Tag, name: Name) -> Result<Value> {
+    fn read_payload(&mut self, tag: &Tag, name: Name) -> Result<Value> {
         match tag {
             Tag::Byte => Ok(Value::Byte(name, self.reader.read_i8()?)),
             Tag::Short => Ok(Value::Short(name, self.reader.read_i16::<BigEndian>()?)),
