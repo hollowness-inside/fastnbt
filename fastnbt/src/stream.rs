@@ -246,7 +246,7 @@ impl<R: Read> Parser<R> {
     /// Get the next value from the reader. Returns EOF if the stream ended sucessfully, and
     /// IO(err) for any other IO error.
     fn next_inner(&mut self) -> Result<Value> {
-        let last_layer = self.layers.last().map(|l| (*l).clone());
+        let last_layer = self.layers.last().cloned();
         match last_layer {
             Some(Layer::List(_, 0)) => {
                 self.layers.pop();
