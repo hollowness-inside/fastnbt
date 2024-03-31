@@ -247,13 +247,14 @@ impl<R: Read> Parser<R> {
     /// IO(err) for any other IO error.
     fn next_inner(&mut self) -> Result<Value> {
         let last_layer = self.layers.last().cloned();
-        match last_layer {
-            Some(Layer::List(_, 0)) => {
-                self.layers.pop();
-                return Ok(Value::ListEnd);
+        if let Some(layer) = &last_layer {
+            match layer {
+                Layer::List(_, 0) => {
+                    self.layers.pop();
+                    return Ok(Value::ListEnd);
+                }
+                _ => {}
             }
-            Some(_) => {}
-            None => {}
         }
 
         if let Some(layer) = self.layers.last_mut() {
