@@ -265,9 +265,9 @@ impl<R: Read> Parser<R> {
             };
         }
 
-        if let Some(layer) = last_layer {
+        if let Some(layer) = &last_layer {
             match layer {
-                Layer::List(tag, _) => return self.read_payload(tag, None),
+                Layer::List(tag, _) => return self.read_payload(*tag, None),
                 Layer::Compound => {}
             };
         }
@@ -284,7 +284,6 @@ impl<R: Read> Parser<R> {
 
         if tag == Tag::End {
             // End tags have no name or value.
-            let last_layer = self.layers.last().map(|l| (*l).clone());
             return match last_layer {
                 Some(Layer::Compound) => {
                     self.layers.pop();
