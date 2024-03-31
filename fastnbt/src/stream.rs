@@ -265,7 +265,6 @@ impl<R: Read> Parser<R> {
             };
         }
 
-        let last_layer = self.layers.last().map(|l| (*l).clone());
         if let Some(layer) = last_layer {
             match layer {
                 Layer::List(tag, _) => return self.read_payload(tag, None),
