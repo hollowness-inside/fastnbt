@@ -80,22 +80,15 @@ impl ByteArray {
 
     /// Produce a ByteArray from raw data.
     pub(crate) fn from_bytes(data: &[u8]) -> Self {
-        // Safe to treat [u8] as [i8].
-        let data = unsafe { &*(data as *const [u8] as *const [i8]) };
         ByteArray {
-            data: data.to_owned(),
+            data: data.iter().map(|x| *x as i8).collect(),
         }
     }
 
     /// Produce a ByteArray from raw data.
     pub(crate) fn from_buf(data: Vec<u8>) -> Self {
-        // TODO: Remove copy.
-        let data = data.as_slice();
-
-        // Safe to treat [u8] as [i8].
-        let data = unsafe { &*(data as *const [u8] as *const [i8]) };
         ByteArray {
-            data: data.to_owned(),
+            data: data.iter().map(|x| *x as i8).collect(),
         }
     }
 
